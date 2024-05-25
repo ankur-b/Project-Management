@@ -1,12 +1,105 @@
-import React from "react";
+import { useState } from "react";
 import "./App.css";
+import ProjectsSidebar from "./components/ProjectsSidebar";
+import NewProject from "./components/NewProject";
+import NoProjectSelected from "./components/NoProjectSelected";
+import SelectedProject from "./components/SelectedProject";
 
 function App() {
+  const [projectsState, setProjectsState] = useState<stateType>({
+    selectedProjectId: undefined,
+    projects: [],
+  });
+
+  function handleStartAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: null,
+      };
+    });
+  }
+  function handleCancelAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+      };
+    });
+  }
+  function handleAddProject(projectData: {
+    title: HTMLInputElement | null;
+    description: HTMLInputElement | null;
+    dueDate: HTMLInputElement | null;
+  }) {
+    setProjectsState((prevState) => {
+      const projectId = Math.random();
+      const newProject = {
+        ...projectData,
+        id: projectId,
+      };
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: [...prevState.projects, newProject],
+      };
+    });
+  }
+  function handleDeleteProject(id:number) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: prevState.projects.filter(
+          (project) => project.id !== id
+        ),
+      };
+    });
+  }
+
+  function handleSelectProject(id: number) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: id,
+      };
+    });
+  }
+  const selectedProject = projectsState.projects.find(
+    (project) => project.id === projectsState.selectedProjectId
+  );
+
+  let content = <SelectedProject project={selectedProject}  onDelete={handleDeleteProject}/>;
+
+  if (projectsState.selectedProjectId === null) {
+    content = (
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} />
+    );
+  } else if (projectsState.selectedProjectId === undefined) {
+    content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
+  }
+
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    </div>
+    <main className="h-screen my-8 flex gap-8">
+      <ProjectsSidebar
+        projects={projectsState.projects}
+        onStartAddProject={handleStartAddProject}
+        selectedProjectId={projectsState.selectedProjectId}
+        onSelectProject={handleSelectProject}
+      />
+      {content}
+    </main>
   );
 }
 
 export default App;
+
+export type stateType = {
+  selectedProjectId: number | undefined | null;
+  projects: {
+    id: number;
+    title: HTMLInputElement | null;
+    description: HTMLInputElement | null;
+    dueDate: HTMLInputElement | null;
+  }[];
+};
