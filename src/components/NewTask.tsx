@@ -7,6 +7,9 @@ export default function NewTask(props:{onAdd:(enteredTask:string)=>void}) {
   }
 
   function handleClick(){
+    if (enteredTask.trim()===''){
+        return
+    }
     props.onAdd(enteredTask)
     setEnteredTask('')
   }

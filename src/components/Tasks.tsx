@@ -3,7 +3,7 @@ import NewTask from "./NewTask";
 export default function Tasks(props: {
   tasks:{id:number,text:string}[];
   onAdd: (enteredTask:string) => void;
-  onDelete: () => void;
+  onDelete: (id:number) => void;
 }) {
   return (
     <section>
@@ -19,7 +19,7 @@ export default function Tasks(props: {
           {props.tasks.map((task) => (
             <li key={task.id} className="flex justify-between my-4">
               <span>{task.text}</span>
-              <button className="text-stone-700 hover:text-red-500">
+              <button onClick={()=>props.onDelete(task.id)} className="text-stone-700 hover:text-red-500">
                 Clear
               </button>
             </li>

@@ -15,7 +15,7 @@ export default function SelectedProject({
   };
   onDelete: (id: number) => void;
   onAddTask:(enteredTask:string)=>void;
-  onDeleteTask:()=>void,
+  onDeleteTask:(id:number)=>void,
   tasks:{id:number,text:string}[]
 }) {
   const formattedDate = new Date(
