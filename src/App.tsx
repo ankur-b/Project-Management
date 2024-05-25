@@ -9,8 +9,24 @@ function App() {
   const [projectsState, setProjectsState] = useState<stateType>({
     selectedProjectId: undefined,
     projects: [],
+    tasks: [],
   });
+  function handleAddTask(enteredTask: string) {
+    setProjectsState((prevState) => {
+      const taskId = Math.random();
+      const newTask = {
+        text: enteredTask,
+        projectId: prevState.selectedProjectId,
+        id: taskId,
+      };
+      return {
+        ...prevState,
+        tasks: [newTask, ...prevState.tasks],
+      };
+    });
+  }
 
+  function handleDeleteTask() {}
   function handleStartAddProject() {
     setProjectsState((prevState) => {
       return {
@@ -45,14 +61,12 @@ function App() {
       };
     });
   }
-  function handleDeleteProject(id:number) {
+  function handleDeleteProject(id: number) {
     setProjectsState((prevState) => {
       return {
         ...prevState,
         selectedProjectId: undefined,
-        projects: prevState.projects.filter(
-          (project) => project.id !== id
-        ),
+        projects: prevState.projects.filter((project) => project.id !== id),
       };
     });
   }
@@ -69,7 +83,15 @@ function App() {
     (project) => project.id === projectsState.selectedProjectId
   );
 
-  let content = <SelectedProject project={selectedProject}  onDelete={handleDeleteProject}/>;
+  let content = (
+    <SelectedProject
+      project={selectedProject}
+      onDelete={handleDeleteProject}
+      onAddTask={handleAddTask}
+      onDeleteTask={handleDeleteTask}
+      tasks={projectsState.tasks}
+    />
+  );
 
   if (projectsState.selectedProjectId === null) {
     content = (
@@ -102,4 +124,8 @@ export type stateType = {
     description: HTMLInputElement | null;
     dueDate: HTMLInputElement | null;
   }[];
+  tasks:{
+    id:number,
+    text:string
+  }[]
 };

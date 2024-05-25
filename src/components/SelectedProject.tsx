@@ -1,6 +1,11 @@
+import Tasks from "./Tasks";
+
 export default function SelectedProject({
   project,
   onDelete,
+  onAddTask,
+  onDeleteTask,
+  tasks
 }: {
   project?: {
     id: number;
@@ -8,7 +13,10 @@ export default function SelectedProject({
     description: HTMLInputElement | null;
     dueDate: HTMLInputElement | null;
   };
-  onDelete: (id:number) => void;
+  onDelete: (id: number) => void;
+  onAddTask:(enteredTask:string)=>void;
+  onDeleteTask:()=>void,
+  tasks:{id:number,text:string}[]
 }) {
   const formattedDate = new Date(
     project?.dueDate as unknown as string
@@ -24,7 +32,10 @@ export default function SelectedProject({
           <h1 className="text-3xl font-bold text-stone-600 mb-2">
             {project?.title as unknown as string}
           </h1>
-          <button onClick={()=>onDelete(project?.id as unknown as number)} className="text-stone-600 hover:text-stone-950">
+          <button
+            onClick={() => onDelete(project?.id as unknown as number)}
+            className="text-stone-600 hover:text-stone-950"
+          >
             Delete
           </button>
         </div>
@@ -33,7 +44,7 @@ export default function SelectedProject({
           {project?.description as unknown as string}
         </p>
       </header>
-      TASKS
+      <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} />
     </div>
   );
 }
